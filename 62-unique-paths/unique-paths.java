@@ -1,19 +1,24 @@
 class Solution {
     public int uniquePaths(int m, int n) {
-        int[][] matrix = new int[m][n];
+        int[] north = new int[n];
+        int west =0;
 
         for(int i=0;i<m;i++){
+            west =0;
+            int[] temp = new int[n];
             for(int j=0;j<n;j++){
                 if(i==0 && j==0){
-                    matrix[i][j]= 1;
+                    west= 1;
                 }else{
-                int up = (i==0)?0:matrix[i-1][j];
-                int left = (j==0)?0:matrix[i][j-1];
-                matrix[i][j]= up+left;            
+                int up = (i==0)?0:north[j];
+                int left = (j==0)?0:west;
+                west = up+left;         
                 }
+                temp[j] = west;
         }
+        north = temp;
         }
 
-        return matrix[m-1][n-1];
+        return north[n-1];
     }
 }
