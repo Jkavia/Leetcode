@@ -25,26 +25,24 @@ class Solution {
 
         while(!que.isEmpty()){
             Queue<TreeNode> tempque = new LinkedList<>();
+            List<Integer> templist = new ArrayList<>();
 
             while(!que.isEmpty()){
                 TreeNode temproot = que.poll();
                 if(temproot.left != null){
                     tempque.add(temproot.left);
+                    templist.add(temproot.left.val);
                 }
                 if(temproot.right != null){
                     tempque.add(temproot.right);
+                    templist.add(temproot.right.val);
                 }
             }
 
-            que = new LinkedList<>(tempque);
-            List<Integer> temp = new ArrayList<>();
-            while(!tempque.isEmpty()){
-                TreeNode temproot = tempque.poll();
-                temp.add(temproot.val);
-            }
+            que = tempque;
 
-            if(!temp.isEmpty()){
-                retlist.add(temp);
+            if(!templist.isEmpty()){
+                retlist.add(templist);
             }
         }
 
