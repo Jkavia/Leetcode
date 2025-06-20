@@ -1,69 +1,49 @@
 class Solution {
     public int orangesRotting(int[][] grid) {
-        int totoalOranges = 0;
-        boolean wasNonRottenThere = false;
-        // count total oranges to keep the track
-        for(int[] row: grid){
-            for(int orange: row){
-                if(orange > 0)totoalOranges++;
-                // check if there are even non rotten oranges in the pack
-                if(orange == 1)wasNonRottenThere = true;
+        // using queue and bfs, we track one iteration of rotten oranges at a time in queue
+        // and then rot the neighbors and run the next iteration and so on.
+        int totalOranges = 0;
+        int rottenOranges = 0;
+        Queue<int[]> que = new LinkedList<>();
+        for(int i=0;i<grid.length;i++){
+            for(int j=0;j<grid[0].length;j++){
+                int orange = grid[i][j];
+                if(orange == 2){
+                    totalOranges++;
+                    rottenOranges++;
+                    que.add(new int[]{i,j});
+                }
+                if(orange ==1){
+                    totalOranges++;
+                }
             }
         }
-        if(!wasNonRottenThere){
-            return 0;
-        }
 
-        int totalMinutes = 0;
-        int orangesAfterRotting =0;
+        if(totalOranges == rottenOranges)return 0;
+        int time =0;
+        int[][] dirs = new int[][]{{-1,0},{1,0},{0,-1},{0,1}};
 
-        while(wasNonRottenThere){
-            wasNonRottenThere = false;
-            orangesAfterRotting = 0;
-            for(int i =0;i<grid.length;i++){
-                for(int j =0;j<grid[0].length;j++){
-                    int orange = grid[i][j];
-                    if(orange == 2)orangesAfterRotting++;
-                    if(orange == 1 && checkNeighbors(grid, i, j)){
-                        grid[i][j] = -1;
-                        }
-                    }
-                }
+        while(!que.isEmpty()){
+            if(totalOranges == rottenOranges)return time;
+            int size = que.size();
+        for(int a=0;a<size;a++){
+            int[] coords = que.poll();
+            for(int i=0;i<dirs.length;i++){
+                int row = coords[0]+dirs[i][0];
+                int col = coords[1]+dirs[i][1];
 
-            for(int i =0;i<grid.length;i++){
-                for(int j =0;j<grid[0].length;j++){
-                    int orange = grid[i][j];
-                    if(orange == -1){
-                        grid[i][j] = 2;
-                        wasNonRottenThere = true;
-                        }
-                    }
+                if(row >= 0 && row < grid.length && col >=0 && col < grid[0].length && grid[row][col] == 1){
+                    grid[row][col]=2;
+                    rottenOranges++;
+                    que.add(new int[]{row, col});
                 }
-            for(int i =0;i<grid.length;i++){
-                for(int j =0;j<grid[0].length;j++){
-                    //System.out.print(grid[i][j]+"  ");
-                }
-                //System.out.println();
             }
-
-            //System.out.println();
-
-                if(wasNonRottenThere)totalMinutes++;
+        }
+        time++;
         }
 
-        if(totoalOranges != orangesAfterRotting){
-            return -1;
-        }else{
-            return totalMinutes;
-        }
+        return -1;
     }
 
-    public boolean checkNeighbors(int[][] grid, int row, int col){
-        int up = (row -1 < 0)? 100: grid[row-1][col];
-        int down = (row+1 > grid.length-1)? 100: grid[row+1][col];
-        int left = (col -1 < 0)? 100: grid[row][col-1];
-        int right = (col+1 > grid[0].length-1)? 100: grid[row][col+1];
 
-        return (up == 2 || down == 2 || left == 2 || right == 2);
-    }
 }
