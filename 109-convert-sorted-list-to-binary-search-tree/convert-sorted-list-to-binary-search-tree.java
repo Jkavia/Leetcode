@@ -26,25 +26,26 @@
 class Solution {
     public TreeNode sortedListToBST(ListNode head) {
         
-        List<Integer> sortedList = new ArrayList<>();
-        ListNode temp = head;
-        while(temp != null){
-            sortedList.add(temp.val);
-            temp = temp.next;
-        }
-        int left = 0, right = sortedList.size()-1;
-        return createBst(sortedList, left, right);
+        if(head == null)return null;
+
+        return createBst(head, null);
     }
 
-    public TreeNode createBst(List<Integer> sortedList, int left, int right){
-        if(right < left)return null;
+    public TreeNode createBst(ListNode left, ListNode right){
+        if(right == left)return null;
+        //find the mid point of each sub linked list.
+        ListNode slow = left;
+        ListNode fast = left;
 
-        int mid = left + (right-left)/2;
-        int midVal = sortedList.get(mid);
-        TreeNode root = new TreeNode(midVal);
+        while(fast != right && fast.next != right){
+            fast = fast.next.next;
+            slow = slow.next;
+        }
 
-        root.left = createBst(sortedList, left, mid-1);
-        root.right = createBst(sortedList, mid+1 , right);
+        TreeNode root = new TreeNode(slow.val);
+
+        root.left = createBst(left, slow);
+        root.right = createBst(slow.next , right);
 
         return root;
     }
