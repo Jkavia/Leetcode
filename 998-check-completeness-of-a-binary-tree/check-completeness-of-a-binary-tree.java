@@ -18,7 +18,6 @@ class Solution {
         Queue<TreeNode> que = new LinkedList<>();
         que.add(root);
         boolean firstNullFound = false;
-        boolean isLastLevel = false;
         while (!que.isEmpty()) {
             int size = que.size();
             int nonnullcount =0;
@@ -26,7 +25,6 @@ class Solution {
                 TreeNode node = que.poll();
                 if (node == null) {
                     firstNullFound = true;
-                    isLastLevel = true;
                     continue;
                 }
                 if (firstNullFound && node != null) {
@@ -43,7 +41,7 @@ class Solution {
                 que.add(node.right);
             }
             //that means there was null on second last level
-            if(isLastLevel && nonnullcount>0)return false;
+            if(firstNullFound && nonnullcount>0)return false;
             firstNullFound = false;
         }
 
