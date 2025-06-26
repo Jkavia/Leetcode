@@ -1,101 +1,79 @@
 class Solution {
     public List<List<String>> findLadders(String beginWord, String endWord, List<String> wordList) {
-        List<List<String>> allPaths = new ArrayList<>();
-        if(beginWord.equals(endWord))return allPaths;
-        //have the begin word in the queue
-        // compare the current queue word with all words from set and if 
-        //char difference is only 1 return true;
-        // if there is a match put that word in next layer of queue and also reverse adjacency map. 
-        //Maintain a wordset that contains all the words
-        Set<String> wordSet = new HashSet<>(wordList);
+        //we need to do a breath first search here, so we'll start from the begin word in a queue
+        // then we'll find all its adjacent neighbors that are 1 letter shift. 
+        // we store this in a adjacency matrix in reverse fashion <neighbor, inputWord>
+        // we will also store this in a temporary set to maintain the next layer of bfs traversal
+        // while traversing if we do end up finding our target word we'll break the loop as we dont worry about path beyond that. 
+        // we'll also register this event as a flag to know for sure that we can reach upto the target word.
+
+        //Next to compare since the lengths of word is same we'll to char by char comparison between two strings and return boolean
+        // Lastly, to create a path we'll do a dfs search and we start from last node and traverse all the way upto the first.
+
+        List<List<String>> res = new ArrayList<>();
         Queue<String> que = new LinkedList<>();
+        Set<String> unvisited = new HashSet<>(wordList);
         que.add(beginWord);
+        Map<String, Set<String>> similarWordsMap = new HashMap<>();
+        Set<String> visited = new HashSet<>();
+        boolean foundIt = false; 
 
-        //Maintain a list of all the words that are 1 letter away from current word
-        Set<String> similarWords = new HashSet<>();
+        while (!que.isEmpty()){
+            String word = que.poll();
+            for(String currWord:unvisited){
+                if(isSimilar(word, currWord)){
+                    visited.add(currWord);
+                    Set<String> neighbors = similarWordsMap.getOrDefault(currWord, new HashSet<>());
+                    neighbors.add(word);
+                    similarWordsMap.put(currWord, neighbors);
 
-        //Maintain a adjacency list of one char diff words in reverse order. 
-        Map<String, Set<String>> adjacencyMap = new HashMap<>();
-
-        //Maintain the track of the fact that we can actually reach the endWord
-        boolean wasEndReached = false;
-
-        //parse que in bfs manner. 
-
-        while(!que.isEmpty()){
-            String currWord = que.poll();
-
-            //run a loop of all the unvisted words to check for 1 char diff 
-            for(String word:wordSet){
-                //check if its similar at 1 char diff
-                if(isOneCharAway(currWord, word)){
-                    //add it to the similar words list 
-                    similarWords.add(word);
-                    // add it to the adjacency map 
-                    Set<String> neighbors = adjacencyMap.getOrDefault(word, new HashSet<>());
-                    neighbors.add(currWord);
-                    adjacencyMap.put(word,neighbors);
-                    //also check if at any point we found the endWord then we can set the flag
-                    if(word.equals(endWord)){
-                        wasEndReached = true;
+                    if(currWord.equals(endWord)){
+                        foundIt = true;
+                        break;
                     }
                 }
             }
 
-            //once all the values of queue are parsed at this layer 
             if(que.isEmpty()){
-                //if end was already found we can exit the loop
-                if(wasEndReached)break;
-                //remove the visited nodes from overall list of wordset
-                wordSet.removeAll(similarWords);
-                //add these words to next layer of bfs 
-                que.addAll(similarWords);
-                // clear the similarWords for next iteration 
-                similarWords.clear();
+                que.addAll(visited);
+                unvisited.removeAll(visited);
+                visited.clear();
             }
         }
 
-        //return an empty list if we were not able to find a path to end word
-        if(!wasEndReached) return allPaths;
-        Set<String> path = new LinkedHashSet<>();
+        if(!foundIt)return res;
+        List<String> path = new ArrayList<>();
         path.add(endWord);
-        findPaths(endWord, beginWord, adjacencyMap, allPaths, path);
+        findPath(endWord, beginWord, path, res, similarWordsMap);
 
-        return allPaths;
+        return res;
     }
 
-    // Method to do a dfs to find all possible paths to target. 
-    public void findPaths(String word, String target, Map<String, Set<String>> adjacencyMap,
-     List<List<String>> allPaths,  Set<String> path){
-        
-        Set<String> similarWords = adjacencyMap.get(word);
-        
-        if(similarWords == null) return;
-        
-        for(String sWord: similarWords){
-            
-            path.add(sWord);
-            
-            if(sWord.equals(target)){
-                List<String> shortestPath = new ArrayList<>(path);
-                Collections.reverse(shortestPath);
-                allPaths.add(shortestPath);
+
+    public void findPath(String endWord, String beginWord, List<String> path, List<List<String>> res, Map<String, Set<String>> similarWordsMap){
+        Set<String> adjacents = similarWordsMap.get(endWord);
+        if(adjacents == null)return;
+        for( String word: adjacents){
+            path.add(word);
+            if(word.equals(beginWord)){
+                List<String> newPath = new ArrayList<>(path);
+                Collections.reverse(newPath);
+                res.add(newPath);
             }else{
-                findPaths(sWord, target, adjacencyMap, allPaths, path);
+                findPath(word, beginWord, path, res, similarWordsMap);
             }
-            path.remove(sWord);
+            path.remove(word);
         }
-     }
-
-    public boolean isOneCharAway(String currWord, String word){
-       int totalDiff =0;
-
-       for(int i=0;i<currWord.length();i++){
-        if(currWord.charAt(i)!= word.charAt(i))totalDiff++;
-       } 
-
-       return totalDiff==1;
-
     }
 
+
+    public boolean isSimilar(String word, String currWord){
+        int count=0;
+        for(int i=0;i<word.length();i++){
+            if(word.charAt(i)!= currWord.charAt(i)){
+                count++;
+            }
+        }
+        return count==1;
+    }
 }
