@@ -1,25 +1,24 @@
 class Solution {
     public int longestConsecutive(int[] nums) {
         if(nums == null || nums.length < 1) return 0;
-        TreeSet<Integer> minHeap = new TreeSet<>();
+        Set<Integer> set = new HashSet<>();
 
         for(int num:nums){
-            minHeap.add(num);
+            set.add(num);
         }
         int maxLen =1;
-        int prev = minHeap.pollFirst();
-        int tempLen =1;
+        int tempLen =0;
 
-        while(!minHeap.isEmpty()){
-            int curr = minHeap.pollFirst();
-
-            if(prev+1 == curr){
-                tempLen++;
-            }else{
-                maxLen = Math.max(maxLen, tempLen);
-                tempLen = 1;
+        for(int num:set){
+            if(!set.contains(num-1)){
+                int val = num;
+                while(set.contains(val)){
+                    tempLen++;
+                    val = val+1;
+                }
             }
-            prev = curr;
+            maxLen = Math.max(maxLen, tempLen);
+            tempLen = 0;
         }
 
         return Math.max(maxLen, tempLen);
