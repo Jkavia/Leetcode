@@ -1,35 +1,43 @@
-class NumMatrix {
+/**
+Lets try to understand this problem in terms area calculations 
+[x x 0]
+[x Y 0]
+[0 0 0]
+now to calcualte the area of upper right triange you can sum the area of upper XX and left XX and Y 
+but that would make you count diagonal X twice so just subtract that from total area hence 
+XX + XX + Y - X, and we can repeat this process over and over to find the area of whole square.
 
-    int[][] internalMatrix;
+Now. once we have the area dp, then on request well just find the area of
+row2,col2 and subtract row1,col2 and row2,col1 and then we'll need to add back the double subtracted diagonal area at row1,col1
+ */
+
+class NumMatrix {
+    int[][] dp;
     int row,col;
+
     public NumMatrix(int[][] matrix) {
         row = matrix.length+1;
         col = matrix[0].length+1;
-        internalMatrix = new int[row][col];
-        //use dp sum the upper area and left area and main value and then subtract that upper corner that was
-        // counted twice in upper and left.
+        dp = new int[row+1][col+1];
         for(int i=1;i<row;i++){
             for(int j=1;j<col;j++){
-                internalMatrix[i][j] = 
-                internalMatrix[i][j-1] + internalMatrix[i-1][j] + matrix[i-1][j-1] - internalMatrix[i-1][j-1];
+                dp[i][j] = dp[i-1][j]+dp[i][j-1]+matrix[i-1][j-1] - dp[i-1][j-1];
             }
         }
-
     }
     
     public int sumRegion(int row1, int col1, int row2, int col2) {
-        int totalAreaToConsider = internalMatrix[row2+1][col2+1];
-        //Area on upper and left side.
-        int areaToSubtract = internalMatrix[row1][col2+1] + internalMatrix[row2+1][col1];
-        // Since it was double subtracted
-        int areaToAddAgain = internalMatrix[row1][col1];
+        int upperRegion = dp[row1][col2+1];
+        int sideRegion = dp[row2+1][col1];
+        int totalArea = dp[row2+1][col2+1];
+        int commonArea = dp[row1][col1];
 
-        return totalAreaToConsider-areaToSubtract+areaToAddAgain;
+        return totalArea-(upperRegion+sideRegion)+commonArea;
     }
 }
-//lets say if every elemet is the sum of upper and left
-// track total sum
-//
+
+
+
 /**
  * Your NumMatrix object will be instantiated and called as such:
  * NumMatrix obj = new NumMatrix(matrix);
