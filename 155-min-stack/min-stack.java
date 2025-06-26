@@ -1,49 +1,56 @@
+
+//Approach: we want to create a LinkedList that tracks, next node, val and min value until that node. 
+// The top will always be head so we'll add all the new values in front. 
+
 class MinStack {
-    ListNode head;
+ListNode head;
 
     public MinStack() {
         head = null;
     }
-
+    
     public void push(int val) {
         if(head == null){
-            head = new ListNode(val, null, val);
+            head = new ListNode(val,val,null);
         }else{
-            int newMin = (val < head.min)?val: head.min;
-            ListNode temp = new ListNode(val, head, newMin);
-            head = temp;
+            int minVal = Math.min(val, head.min);
+            ListNode curr = new ListNode(val, minVal, head);
+            head = curr;
         }
     }
-
+    
     public void pop() {
-        if(head != null){
-            ListNode temp = head;
-            head = head.next;
-            temp.next = null;
+        if(head!=null){
+        ListNode curr = head;
+        head = head.next;
+        curr.next = null;
         }
     }
-
+    
     public int top() {
+        if(head !=null){
         return head.val;
+        }else return 0;
     }
-
+    
     public int getMin() {
+       if(head !=null){
         return head.min;
+       }else return 0;
     }
 }
 
-class ListNode {
+class ListNode{
     int val;
-    ListNode next;
     int min;
+    ListNode next;
 
-    public ListNode(int val, ListNode next, int min) {
-         this.val = val;
-         this.next = next;
-         this.min = min;
+    public ListNode(int val, int min, ListNode next){
+        this.val = val;
+        this.min = min;
+        this.next = next;
     }
 }
-
 /**
  * Your MinStack object will be instantiated and called as such:
  * MinStack obj = new MinStack();
