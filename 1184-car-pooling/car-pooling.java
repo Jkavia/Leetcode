@@ -1,23 +1,23 @@
 class Solution {
+    //Now since there are only 1000 stations 
+    // we will create a list of these station and update the values with number of people who got in and got out there
+    // when they get in we increase the value for that station with those ith number of people and when they get out we reduce it
+    int[] stations = new int[1001];
     public boolean carPooling(int[][] trips, int capacity) {
-        //since there are only 1000 stops we just need to track how many people 
-        // got in/out of the car and then we can just iterate through the stops 
-        //adjusting our capacity and comparing it to overall, if it goes above the limit we return false
+        for(int[] arr:trips){
+            int numpassenger = arr[0];
+            int from = arr[1];
+            int to = arr[2];
 
-        int[] destinations = new int[1001];
-        for(int[] trip:trips){
-            int passenger = trip[0];
-            int st = trip[1];
-            int end = trip[2];
-            destinations[st] += passenger;
-            destinations[end] -= passenger;
+            stations[from] += numpassenger;
+            stations[to] -= numpassenger;            
         }
 
-        int currCapacity =0;
-        for(int i =0;i<destinations.length;i++){
-            currCapacity += destinations[i];
+        int currPassenger =0;
 
-            if(currCapacity > capacity)return false;
+        for(int i=0;i<stations.length;i++){
+            currPassenger += stations[i];
+            if(currPassenger > capacity)return false;
         }
         return true;
     }
