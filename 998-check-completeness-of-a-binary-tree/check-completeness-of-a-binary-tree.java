@@ -13,38 +13,36 @@
  *     }
  * }
  */
+
+ //To verify completeness we do a bfs using que, and check if at any point while parsing que there is a null
+ // that means its a last value and there should be no kids either, if any of these conditions fails we know tree 
+ // isnt binary
+
 class Solution {
     public boolean isCompleteTree(TreeNode root) {
+        boolean isLastLayer = false;
+
         Queue<TreeNode> que = new LinkedList<>();
         que.add(root);
-        boolean firstNullFound = false;
-        while (!que.isEmpty()) {
+
+        while(!que.isEmpty()){
             int size = que.size();
-            int nonnullcount =0;
-            for (int i = 0; i < size; i++) {
+            for(int i =0;i<size;i++){
                 TreeNode node = que.poll();
-                if (node == null) {
-                    firstNullFound = true;
-                    continue;
+                if(node == null){
+                    isLastLayer = true;
+                }else{
+                if(isLastLayer)return false;
+                TreeNode left = node.left;
+                TreeNode right = node.right;
+                que.add(left);
+                que.add(right);
                 }
-                if (firstNullFound && node != null) {
-                    return false;
-                }
-                if(node.left !=null){
-                    nonnullcount++;
-                }
-                
-                if(node.right !=null){
-                    nonnullcount++;
-                }
-                que.add(node.left);
-                que.add(node.right);
             }
-            //that means there was null on second last level
-            if(firstNullFound && nonnullcount>0)return false;
-            firstNullFound = false;
         }
 
         return true;
+
+        
     }
 }
