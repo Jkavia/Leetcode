@@ -1,38 +1,49 @@
 class Solution {
     public int[] smallestRange(List<List<Integer>> nums) {
-        PriorityQueue<int[]> minHeap = new PriorityQueue<>((a,b)-> Integer.compare(a[0], b[0]));
-        int maxValue = Integer.MIN_VALUE;
+        PriorityQueue<Node> pq = new PriorityQueue<>((a,b)-> Integer.compare(a.val, b.val));
+        int maxVal = Integer.MIN_VALUE;
+        
+
         for(int i=0;i<nums.size();i++){
-            int[] entry = new int[]{nums.get(i).get(0), i,0};
-            minHeap.add(entry);
-            maxValue = Math.max(maxValue, nums.get(i).get(0));
+            int val = nums.get(i).get(0);
+            Node node = new Node(i,0,val);
+            pq.add(node);
+            maxVal = Math.max(maxVal, val);
         }
-
-        int[] ret = new int[]{0, Integer.MAX_VALUE};
-
+        int[] minRange = new int[]{pq.peek().val, maxVal};
+        
         while(true){
-            int[] entry = minHeap.poll();
-            int minVal = entry[0];
-            int listIdx = entry[1];
-            int valIdx = entry[2];
-            // if this window is smaller than existing one , then replace
-            if(maxValue-minVal < ret[1]-ret[0]){
-                ret[0] = minVal;
-                ret[1] = maxValue;
+            Node node = pq.poll();
+            int val = node.val;
+            int list = node.list;
+            int idx = node.idx;
+
+            if(maxVal - val < minRange[1] - minRange[0]){
+                minRange[0] = val;
+                minRange[1] = maxVal;
             }
 
-            if(nums.get(listIdx).size()-1 > valIdx){
-                //System.out.println(" listIdx"+listIdx+" valIdx"+valIdx);
-            int nextVal = nums.get(listIdx).get(valIdx+1);
-            int[] newEntry = new int[]{nextVal, listIdx,valIdx+1};
-            minHeap.add(newEntry);
-            maxValue = Math.max(maxValue, nextVal);
-            }else{
-                //we've reached to end of one of the lists so we exit
-                break;
-            }
+            if(idx+1 >= nums.get(list).size())break;
+            int newIdx = idx+1;
+            int newVal = nums.get(list).get(newIdx);
+            maxVal = Math.max(maxVal, newVal);
+            Node tempNode = new Node(list, newIdx, newVal);
+            pq.add(tempNode);
         }
 
-        return ret;
+        return minRange;
+
+    }
+}
+
+class Node {
+    int list;
+    int idx;
+    int val;
+
+    public Node(int list, int idx, int val){
+        this.list = list;
+        this.idx = idx;
+        this.val = val;
     }
 }
