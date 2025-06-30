@@ -1,57 +1,44 @@
 class MaxStack {
-    TreeSet<StackEntry> setOrder;
-    TreeSet<StackEntry> setMax;
-    int order;
+    TreeSet<int[]> pq;
+    TreeSet<int[]> topPq;
+    int counter;
 
     public MaxStack() {
-        setOrder = new TreeSet<>((a,b) -> Integer.compare(b.order,a.order));
-        setMax = new TreeSet<>((a,b) -> {
-            int comp = Integer.compare(b.val,a.val);
-            if(comp != 0){
-                return comp;
-            }
-            return Integer.compare(b.order,a.order);
-            });
-        order =0;
-        
+        counter = 0;
+        pq = new TreeSet<>((a,b) -> {
+        if(Integer.compare(b[0], a[0]) == 0){
+            return Integer.compare(b[1], a[1]);
+        }
+            return Integer.compare(b[0], a[0]);});
+        topPq = new TreeSet<>((a,b) -> Integer.compare(b[1],a[1]));
     }
     
     public void push(int x) {
-        StackEntry se = new StackEntry(x,order);
-        setOrder.add(se);
-        setMax.add(se);
-        System.out.println(setMax.first().val);
-        order++;
+        int[] arr = new int[]{x,counter};
+        pq.add(arr);
+        topPq.add(arr);
+        counter++;
+
     }
     
     public int pop() {
-        StackEntry se = setOrder.pollFirst();
-        setMax.remove(se);
-        return se.val;
+        int[] arr = topPq.pollFirst();
+        pq.remove(arr);
+        return arr[0];
     }
     
     public int top() {
-        return setOrder.first().val;
+        return topPq.first()[0];
     }
     
     public int peekMax() {
-        return setMax.first().val;
+        return pq.first()[0];
     }
     
     public int popMax() {
-        StackEntry se = setMax.pollFirst();
-        setOrder.remove(se);
-        return se.val;
-    }
-}
-
-class StackEntry{
-    int val;
-    int order;
-
-    public StackEntry(int val, int order){
-        this.val = val;
-        this.order = order;
+        int[] arr = pq.pollFirst();
+        topPq.remove(arr);
+        return arr[0];
     }
 }
 
