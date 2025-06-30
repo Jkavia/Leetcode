@@ -1,33 +1,32 @@
 class TimeMap {
-    Map<String, TreeMap<Integer, String>> tracker;
+
+    Map<String, TreeMap<Integer, String>> map;
 
     public TimeMap() {
-        tracker = new HashMap<>();
+        map = new HashMap<>();
     }
     
     public void set(String key, String value, int timestamp) {
-        if(tracker.containsKey(key)){
-            TreeMap<Integer, String> treeMap = tracker.get(key);
-            treeMap.put(timestamp, value);
-        }else{
-            TreeMap<Integer, String> treeMap = new TreeMap<>();
-            treeMap.put(timestamp, value);
-            tracker.put(key, treeMap);
-        }
+        TreeMap<Integer, String> innerMap = map.getOrDefault(key, new TreeMap<>());
+        innerMap.put(timestamp, value);
+        map.put(key,innerMap);
     }
     
     public String get(String key, int timestamp) {
-        if(tracker.containsKey(key)){
-            TreeMap<Integer, String> treeMap = tracker.get(key);
-            Integer floorKey = treeMap.floorKey(timestamp);
-            if(floorKey == null)return "";
-            return treeMap.get(floorKey);
+        if(!map.containsKey(key))return "";
 
+        TreeMap<Integer, String> innerMap = map.get(key);
+        if(innerMap.floorKey(timestamp) != null){
+            int tkey = innerMap.floorKey(timestamp);
+             return innerMap.get(tkey);
         }
+
         return "";
+       
+
+
     }
 }
- 
 
 /**
  * Your TimeMap object will be instantiated and called as such:
