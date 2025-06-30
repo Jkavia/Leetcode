@@ -25,27 +25,25 @@
  */
 class Solution {
     public TreeNode sortedListToBST(ListNode head) {
-        
-        if(head == null)return null;
+        //since its a linkedlist we'll do divide and conquer, find the mid point through slow and fast ptr
+        // then do another recirsive call with these limits 
 
-        return createBst(head, null);
+        return getBst(head, null);
     }
 
-    public TreeNode createBst(ListNode left, ListNode right){
-        if(right == left)return null;
-        //find the mid point of each sub linked list.
-        ListNode slow = left;
-        ListNode fast = left;
+    public TreeNode getBst(ListNode left, ListNode right){
+        if(left == right)return null;
+        ListNode slow = left, fast = left;
 
-        while(fast != right && fast.next != right){
-            fast = fast.next.next;
+        while(fast != right && fast.next!=right){
             slow = slow.next;
+            fast = fast.next.next;
         }
 
         TreeNode root = new TreeNode(slow.val);
 
-        root.left = createBst(left, slow);
-        root.right = createBst(slow.next , right);
+        root.left = getBst(left, slow);
+        root.right = getBst(slow.next, right);
 
         return root;
     }
