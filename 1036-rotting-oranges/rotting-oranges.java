@@ -1,49 +1,48 @@
 class Solution {
+    // Add non rotten neighbors to the set 
     public int orangesRotting(int[][] grid) {
-        // using queue and bfs, we track one iteration of rotten oranges at a time in queue
-        // and then rot the neighbors and run the next iteration and so on.
-        int totalOranges = 0;
-        int rottenOranges = 0;
         Queue<int[]> que = new LinkedList<>();
+
+        int time =0;
+        int totalOne =0;
+        int curr =0;
+
         for(int i=0;i<grid.length;i++){
             for(int j=0;j<grid[0].length;j++){
-                int orange = grid[i][j];
-                if(orange == 2){
-                    totalOranges++;
-                    rottenOranges++;
-                    que.add(new int[]{i,j});
+                if(grid[i][j] == 2){
+                    int[] cords = new int[]{i,j};
+                    que.add(cords);
                 }
-                if(orange ==1){
-                    totalOranges++;
+                if(grid[i][j] == 1){
+                    totalOne++;
                 }
             }
         }
-
-        if(totalOranges == rottenOranges)return 0;
-        int time =0;
-        int[][] dirs = new int[][]{{-1,0},{1,0},{0,-1},{0,1}};
+        // no unrotten oranges so return 0 time
+        if(totalOne == 0)return 0;
 
         while(!que.isEmpty()){
-            if(totalOranges == rottenOranges)return time;
+            time++;
             int size = que.size();
-        for(int a=0;a<size;a++){
-            int[] coords = que.poll();
-            for(int i=0;i<dirs.length;i++){
-                int row = coords[0]+dirs[i][0];
-                int col = coords[1]+dirs[i][1];
+            for(int i =0;i<size;i++){
+                int[] cords = que.poll();
+                int[][] directions = new int[][]{{1,0},{0,1},{-1,0},{0,-1}};
+                for(int[] dir:directions){
+                    int x = cords[0]+dir[0];
+                    int y = cords[1]+dir[1];
 
-                if(row >= 0 && row < grid.length && col >=0 && col < grid[0].length && grid[row][col] == 1){
-                    grid[row][col]=2;
-                    rottenOranges++;
-                    que.add(new int[]{row, col});
+                    if(x>=0 && x<grid.length && y>=0 && y<grid[0].length && grid[x][y]==1){
+                        grid[x][y]=2;
+                        int[] temp = new int[]{x,y};
+                        que.add(temp);
+                        curr++;
+                    }
+                    if(curr == totalOne) return time;
                 }
             }
-        }
-        time++;
         }
 
         return -1;
+        
     }
-
-
 }
