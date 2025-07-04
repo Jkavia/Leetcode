@@ -13,7 +13,7 @@ class Solution {
         int longestSum = Integer.MIN_VALUE;
         int[][] dp = new int[row][col];
         //Set<int[]> visited = new HashSet<>();
-        for(int i=0;i<row;i++){Arrays.fill(dp[i],-1);}
+        //for(int i=0;i<row;i++){Arrays.fill(dp[i],-1);}
 
         for(int i=0;i<row;i++){
             for(int j=0;j<col;j++){
@@ -31,7 +31,7 @@ class Solution {
 
         int r = node[0], c = node[1];
 
-        if(dp[r][c] != -1)return dp[r][c];
+        if(dp[r][c] != 0)return dp[r][c];
 
         int[][] dirs = new int[][]{{1,0},{0,1},{-1,0},{0,-1}};
 
