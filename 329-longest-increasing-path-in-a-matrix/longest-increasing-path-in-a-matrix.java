@@ -17,10 +17,7 @@ class Solution {
                 if(dp[i][j]==0){
                 int pathSum = longestPathSumForBox(matrix, dp, new int[]{i, j});
                 longestSum = Math.max(longestSum, pathSum);
-                }else{
-                longestSum = Math.max(longestSum, dp[i][j]);
                 }
-
             }
         }
 
