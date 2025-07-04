@@ -12,14 +12,15 @@ class Solution {
         int col = matrix[0].length;
         int longestSum = Integer.MIN_VALUE;
         int[][] dp = new int[row][col];
-        //Set<int[]> visited = new HashSet<>();
-        //for(int i=0;i<row;i++){Arrays.fill(dp[i],-1);}
-
         for(int i=0;i<row;i++){
             for(int j=0;j<col;j++){
-
+                if(dp[i][j]==0){
                 int pathSum = longestPathSumForBox(matrix, dp, new int[]{i, j});
                 longestSum = Math.max(longestSum, pathSum);
+                }else{
+                longestSum = Math.max(longestSum, dp[i][j]);
+                }
+
             }
         }
 
