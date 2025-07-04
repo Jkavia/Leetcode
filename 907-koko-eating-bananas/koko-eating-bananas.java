@@ -5,7 +5,10 @@
 class Solution {
     public int minEatingSpeed(int[] piles, int h) {
         int left =1;
-        int right = 1000000000;// defined max possible value, if not we can do a loop to get max 
+        int right = 0;// defined max possible value, if not we can do a loop to get max 
+        for(int val: piles){
+            right = Math.max(right, val);
+        }
 
         while(left<=right){
             int mid = left+(right-left)/2;
