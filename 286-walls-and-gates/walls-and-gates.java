@@ -28,7 +28,7 @@ class Solution {
                     int ncol = dir[1]+cell[1];
 
                     if(nrow>= 0 && nrow<rooms.length && ncol>= 0 && ncol<rooms[0].length && rooms[nrow][ncol] == Integer.MAX_VALUE){
-                        rooms[nrow][ncol] = Math.min(rooms[nrow][ncol], count);
+                        rooms[nrow][ncol] =  count;
                         que.offer(new int[]{nrow,ncol});
                     }
                 }
