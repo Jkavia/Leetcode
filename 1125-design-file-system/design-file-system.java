@@ -1,77 +1,33 @@
-// A file system will have a map that will have root address of all the folders 
-// and value associated with them will be the folder object and inside that object we'll have a map 
-// of its children and its value. 
 class FileSystem {
-
-    Map<String, Folder> folders;
+    // Other way to do this is, store all paths on the same map, 
+    // and check the parent existence by checking if the path before last "/" already exists in map. 
+    Map<String,Integer> paths;
 
     public FileSystem() {
-        folders = new HashMap<>();
+        paths = new HashMap<>();
     }
-
-    public boolean createPath(String inputpath, int value) {
-        String[] pathlist = inputpath.split("/");
-        Map<String, Folder> currFolders = folders;
-        for (int i = 1; i < pathlist.length; i++) {
-            String path = pathlist[i];
-            //System.out.println(path);
-            if (currFolders.containsKey(path)) {
-                // path already exists 
-                if (i == pathlist.length - 1) {
-                    return false;
-                } else {
-                    // we need to go to inner folders. 
-                    currFolders = currFolders.get(path).children;
-                }
-            } else {
-                //check if its the last spot only then create a new path.
-                if (i == pathlist.length - 1) {
-                    Folder folder = new Folder(path, value);
-                    currFolders.put(path, folder);
-                    return true;
-                } else {
-                    //parent path is not present. 
-                    return false;
-                }
-            }
+    
+    public boolean createPath(String path, int value) {
+        // lets do some basic checks here
+        if(path.isEmpty() || path==null || path.indexOf("/") == -1 || (path.length() == 1 && path.equals("/")) || paths.containsKey(path)){
+            return false;
         }
-        return false;
-    }
 
-    public int get(String inputpath) {
-        String[] pathlist = inputpath.split("/");
-        Map<String, Folder> currFolders = folders;
-        for (int i = 1; i < pathlist.length; i++) {
-            String path = pathlist[i];
-            if (currFolders.containsKey(path)) {
-                // path exists 
-                if (i == pathlist.length - 1) {
-                    return currFolders.get(path).val;
-                } else {
-                    // we need to go to inner folders. 
-                    currFolders = currFolders.get(path).children;
-                }
-            } else {
-                //path doesn't exist.
-                return -1;
-
-            }
+        int indexOfLastSlash = path.lastIndexOf("/");
+        if(indexOfLastSlash > 0){
+        String parent = path.substring(0,indexOfLastSlash);
+        // parent doent exist
+        if(!paths.containsKey(parent)){
+            return false;
         }
-        return -1;
+        }
+        //prevent overwriting 
+        paths.put(path, value);
+        return true;
     }
-}
-
-//have a folder class that will have its path value, its content and its children folders. 
-class Folder {
-    String fpath;
-    int val;
-    Map<String, Folder> children;
-
-    public Folder(String fpath, int val) {
-        this.fpath = fpath;
-        this.val = val;
-        children = new HashMap<>();
-
+    
+    public int get(String path) {
+        return paths.getOrDefault(path,-1);
     }
 }
 
