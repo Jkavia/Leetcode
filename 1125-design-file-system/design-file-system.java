@@ -8,8 +8,9 @@ class FileSystem {
     }
     
     public boolean createPath(String path, int value) {
-        // lets do some basic checks here
+        // lets do some basic checks here and prevent overwriting 
         if(path.isEmpty() || path==null || path.indexOf("/") == -1 || (path.length() == 1 && path.equals("/")) || paths.containsKey(path)){
+                  
             return false;
         }
 
@@ -21,7 +22,7 @@ class FileSystem {
             return false;
         }
         }
-        //prevent overwriting 
+
         paths.put(path, value);
         return true;
     }
