@@ -1,97 +1,89 @@
+    // for this question we need to do a bfs from each of the building 
+    // note the cell distance from that building, and for new building we add new distance to exiting distance 
+    // but there are few catches here that we need to monitor, one is keep a track of cells that were never reached
+    // two keep the track of possiblity if any of the building is in unreachable spot. (has walls all around it)
+    // to keep the track of unvisited cells we'll put a value "3" in grid for those 
+    // and to handle the unvisitable building case we will track it in visited array and if it comes out as 
+    // unvisited after whole bfs then we know its inaccesible and the solution is not possible for this problem 
 class Solution {
     public int shortestDistance(int[][] grid) {
-        // do bfs from each building 
-        // find distance to that building at each cell, use queue for each level 
-        // after calculating distance from all building, then run a loop for each of the 
-        // cells that are able to access all the buildings, and keep updating the min. 
+        if(grid == null || grid.length == 0) return -1;
+
         int row = grid.length;
         int col = grid[0].length;
+
         int[][] distances = new int[row][col];
 
-        for (int i = 0; i < row; i++) {
-            for (int j = 0; j < col; j++) {
-                if (grid[i][j] == 1) {
-                    if(!bfsForBuilding(grid, i, j, distances)){
-                        return -1;
-                    }
+        for(int i=0;i<row;i++){
+            for(int j=0;j<col;j++){
+                if(grid[i][j] == 1 && !bfs(i,j,grid, distances)){
+                    return -1;
+                }
+            }        
+        }
+
+        int minDistance = Integer.MAX_VALUE;
+        for(int i=0;i<row;i++){
+            for(int j=0;j<col;j++){
+                //if its not a wall/unreachable cell/building then calculate min
+                if(grid[i][j] != 1 && grid[i][j] != 2 && grid[i][j] != 3){
+                    minDistance = Math.min(minDistance, distances[i][j]);
                 }
             }
         }
-        int minDis = Integer.MAX_VALUE;
 
-        for (int i = 0; i < row; i++) {
-            for (int j = 0; j < col; j++) {
-                System.out.print(distances[i][j]+" ");
-                if(grid[i][j]!= 1 && grid[i][j]!=2 && grid[i][j]!=3){
-                    minDis = Math.min(minDis, distances[i][j]);
-                }
-            }
-            System.out.println();
-        }
-
-        return minDis==Integer.MAX_VALUE?-1:minDis;
+        //there might be a possibility that all cells are unreacheable, in that case return -1
+        return minDistance == Integer.MAX_VALUE ? -1:minDistance;
 
     }
 
-    public boolean bfsForBuilding(int[][] grid, int iInput, int jInput, int[][] distances) {
+    //lets do the bfs algorithm
+    public boolean bfs(int i, int j, int[][] grid, int[][] distances){
         int row = grid.length;
         int col = grid[0].length;
         boolean[][] visited = new boolean[row][col];
-        int[][] directions = new int[][] { { 1, 0 }, { 0, 1 }, { -1, 0 }, { 0, -1 } };
-        Queue<Cell> que = new LinkedList<>();
+        int[][] directions = new int[][]{{1,0},{0,1},{-1,0},{0,-1}};
+        int distance =1;
 
-        que.add(new Cell(iInput, jInput));
-        int distance = 1;
-        while (!que.isEmpty()) {
+        Queue<int[]> que = new LinkedList<>();
+        que.add(new int[]{i,j});
+
+        while(!que.isEmpty()){
             int size = que.size();
 
-            for (int i = 0; i < size; i++) {
-                Cell cell = que.poll();
+            for(int a =0;a<size;a++){
+                int[] cell = que.poll();
+                for(int[] direction: directions){
+                    int x = cell[0]+direction[0];
+                    int y = cell[1]+direction[1];
 
-                for (int[] dir : directions) {
-                    int x = cell.x + dir[0];
-                    int y = cell.y + dir[1];
-
-                    if (x >= 0 && x < row && y >= 0 && y < col && grid[x][y] != 2 && !visited[x][y]) {
+                    if(x >=0 && x < row && y>=0 && y<col && grid[x][y]!=2 && !visited[x][y]){
                         visited[x][y] = true;
-                        if(grid[x][y] == 1){
-                            // we'll just mark the cell as visited to be used later.
-                            continue;
-                        }
+                        if(grid[x][y] == 1)continue; // just want to mark gates as visited. 
                         distances[x][y] += distance;
-                        que.add(new Cell(x, y));
+                        que.add(new int[]{x,y});
                     }
                 }
             }
             distance++;
         }
 
-
-        //we have couple of missing scenarios here that we need to cover 
-        // first is we need to make sure that all the gates are reachable from all points 
-        // otherwise there is no solution, so we need to add the gates to visited. 
-        // other thing is we need to somehow account for the unvisited cells and skip counting them 
-            for (int i = 0; i < row; i++) {
-                for (int j = 0; j < col; j++) {
-                    if(!visited[i][j]){
-                        if(grid[i][j] == 0){
-                            grid[i][j] = 3;
-                        }
-                        if(grid[i][j] == 1) return false;
+        for(int a=0;a<row;a++){
+            for(int b=0;b<col;b++){
+                if(!visited[a][b]){
+                    if(grid[a][b]==0){
+                        grid[a][b]=3;
                     }
+                    if(grid[a][b]==1) return false;
                 }
             }
+        }
 
-            return true;
+        return true;
+
+
     }
-}
 
-class Cell{
-    int x;
-    int y;
 
-    public Cell(int a, int b){
-        x=a;
-        y=b;
-    }
+
 }
