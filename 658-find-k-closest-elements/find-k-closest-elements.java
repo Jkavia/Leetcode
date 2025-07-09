@@ -1,31 +1,27 @@
-// we will use priority queue and store the distances 
-// then we'll poll the queue to get the top 4
+// populate priortiy queue with elements unit size is k
+// once we reach k, the order of elelments in queue is smallest element first. 
+// now if we add a new elelemtn whose difference is smaller than the diffrence 
+// with smallest element in that range then we will shift the range to right side element 
+// and remove that smallest num from que. 
+
 class Solution {
     public List<Integer> findClosestElements(int[] arr, int k, int x) {
-        PriorityQueue<Integer> pq = new PriorityQueue<>((a,b)-> {
-            if(Math.abs(a-x) == Math.abs(b-x)){
-                return Integer.compare(a,b);
-            }else{
-                int num1 = Math.abs(a-x);
-                int num2 = Math.abs(b-x);
-                return Integer.compare(num1, num2);
+
+        List<Integer> list = new ArrayList<>();
+        PriorityQueue<Integer> pq = new PriorityQueue<>();
+
+        for(int a:arr){
+            if(pq.size()<k){
+                pq.add(a);
+            }else if(Math.abs(pq.peek()-x) > Math.abs(a-x)){
+                pq.poll();
+                pq.add(a);
             }
-        });
-
-        for(int a: arr){
-            pq.add(a);
-        }
-        List<Integer> ret = new ArrayList<>();
-
-        while(ret.size()<k){
-            ret.add(pq.poll());
         }
 
-        Collections.sort(ret);
-
-        return ret;
+        while(!pq.isEmpty()){
+            list.add(pq.poll());
+        }
+        return list;
     }
 }
-
-// 1 2 4 5 6
-// 4 3 2 0 1
