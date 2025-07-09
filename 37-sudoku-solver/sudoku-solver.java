@@ -1,70 +1,58 @@
+// we need to use recursion here or dfs with backtracking to undo the incorrect placements 
+// additionally we need to have a separate function to check if that insertion is valid as per the rules
+// at that point of time. i.e. check row,col,box values against insertion
 class Solution {
     public void solveSudoku(char[][] board) {
-        
-        solve(board, 0,0);
+        // helper function to pass row,col for termination conditions.
+        solve(0,0,board);
     }
 
-    public boolean solve(char[][] board, int row, int col){
-        // if we have parsed all rows and cols
-        if(row == board.length){
-            return true;
-        }
+    public boolean solve(int row, int col, char[][] board){
 
-        // if we have parsed current layer of column, restart with new row.
+        //check if we have parsed all the rows. 
+        if(row == board.length)return true;
+
         if(col == board[0].length){
-            return solve(board, row+1,0);
+            return solve(row+1, 0,board);
         }
 
-        // we want to skip past the existing numeric values
         if(board[row][col] != '.'){
-            return solve(board, row, col+1);
+            //skip the already populated cells
+            return solve(row, col+1,board);
         }
 
-        for(char c = '1';c<='9';c++){
-
-            if(checkValidity(board, row, col, c)){
-                board[row][col] = c;
-                if(solve(board, row,col+1)){
+        // process the empty columns
+        for(char a = '1';a<='9';a++){
+            //check for validity of this a 
+            if(isValid(a,row, col, board)){
+                board[row][col] = a;
+                //if we found valid solution then we'll return true else we'll backtrack and insert diff value
+                if(solve(row, col+1, board)){
                     return true;
+                }else{
+                    board[row][col] = '.';
                 }
-                // reset after failure in backtrack 
-                board[row][col] = '.';
             }
         }
 
         return false;
-
     }
 
-    public boolean checkValidity(char[][] board, int row, int col, char val){
 
-        for(int i=0;i<board.length;i++){
-            if(board[row][i] == val || board[i][col] == val)return false;
+    public boolean isValid(char c, int row, int col, char[][]board){
 
-            int boxCol = 3* (col/3) + i%3;
-            int boxRow = 3* (row/3) + i/3;
-            //System.out.println("boxCol: "+boxCol+" boxRow: "+boxRow+" row: "+row+" col: "+col+" i :"+i);
+        for(int i=0;i<9;i++){
+            if(board[row][i] == c || board[i][col] == c) return false;
+            // when i =3,4,5 row =1, i=6,7,8 row =2 
+            // now for row 0-2 base is 0, 3-5 base is 1, 6-8 base is 2
+            int nRow = 3* (row/3) + i/3;
+            int nCol = 3 * (col/3) + i%3;
 
-            if(board[boxRow][boxCol] == val)return false;
+            if(board[nRow][nCol] == c) return false;
         }
 
         return true;
     }
+
+
 }
-
-
-// steps here 
-// traverse through the matrix using a solve function 
-// in this function traverse through each row and its cols recursively 
-// at each layer check for "." and insert vals between '1' to '9' with validity function check 
-// how ever as we progress we might come across situations where we picked up a wrong number 
-// as in forward column that led to conflict 
-// to counter this we'll return false and update that cell value back to "."
-// and try with a different numeric value to see if that fixes the future placements. 
-
-// now one key thing is the check for the existence of the number in box, 
-// to do that calculation we use a clever trick 
-// as we know that in each box row only changes two times with an increment of 1 
-// but the column changes 8 times with resets to 0 for each new row. 
-// to implement this we go ncol = 3* col/3 + i%3 (used mod as it resets to 0 on new row)
-// nrow = 3* row/3 + i/3 (/ as it increment with each i+3 )
