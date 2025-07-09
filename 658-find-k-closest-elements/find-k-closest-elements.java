@@ -25,3 +25,14 @@ class Solution {
         return list;
     }
 }
+
+// time complexity of the current approach is NlogK worse case, to improve that 
+// we can do a binary search of the range. such that if the mid-x < mid+k-x we move the right ptr to mid
+// or vice versa. and in that case our complexity will go down to log N
+// pseudo code
+// left = 0, right = len-k
+// while(left<right)
+//    mid = left +(left-right)/2;
+//    if(Math.abs(arr[mid]-x) > Math.abs(arr[mid+k]-x))left = mid+1
+//    else right = mid
+//     then run the loop from left to k and add elements. 
