@@ -13,31 +13,32 @@
  *     }
  * }
  */
- //we are going to call the left sub tree and right subtree separately and find their respective max sum
- // the way we will find this max sum is we're gonna call left/right for each node until null
- // and then what ever is a greater value we'll just add that to the root and return root. 
- // And we'll do that to keep traveling upwards. 
- // once we have max sum of both sides well add those two to main root and then return the final value. 
- // Instead of just checking sum of final path we'll add another step to also check the sum of sub paths. 
- // One thing to take care of is that anytime we find a negative value as a sum of left/right we rest that to 0.
 class Solution {
     int maxSum = Integer.MIN_VALUE;
     public int maxPathSum(TreeNode root) {
-        maxSumSide(root);
+        pathSum(root);
+
         return maxSum;
     }
 
-    public int maxSumSide(TreeNode root){
+    public int pathSum(TreeNode root){
         if(root == null)return 0;
 
-        int left = maxSumSide(root.left);
-        int right = maxSumSide(root.right);
+        int rootVal = root.val;
 
-        int leftSum = left<0?0:left;
-        int rightSum = right<0?0:right;
+        int left = pathSum(root.left);
+        int right = pathSum(root.right);
 
-        maxSum = Math.max(maxSum, root.val+leftSum+rightSum);
-
-        return Math.max(leftSum, rightSum)+root.val;
+        int adjustedLeft = (left<0)?0:left;
+        int adjustedRight = (right<0)?0:right;
+        maxSum = Math.max(maxSum, rootVal+adjustedLeft+adjustedRight);
+        return rootVal+Math.max(adjustedLeft, adjustedRight);
     }
 }
+
+//here we need to maintain a class level variable that tracks max at each node level
+// we do the dfs on both left and right side and on its way back we add the node values 
+// but if a left or right node value is negative then we consider it as good as none so we default it to 0 
+// and then at each root node level we just add the max of left or right to root value and send it. 
+// what this is doing is if at that root it was a max sum it would be registed in class level variable 
+// and it it wasnt then the best we can do from that level is to send back the max sum from either of the paths or none if negative. 
