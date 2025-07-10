@@ -29,7 +29,6 @@ class Solution {
 
     public boolean checkHoursNeededAtMidSpeed(int[] piles, int h, int mid){
         long totalTime = 0;
-        System.out.println(mid);
         for(int pile:piles){
             long h1 = pile/mid;
             long h2 = (pile%mid == 0)?0:1;
