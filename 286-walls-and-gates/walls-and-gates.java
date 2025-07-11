@@ -26,7 +26,7 @@ class Solution {
                     int x = cell[0]+dir[0];
                     int y = cell[1]+dir[1];
 
-                    if(x>=0 && x<row && y>=0 && y<col && rooms[x][y]!=0 && rooms[x][y]!=-1 && rooms[x][y]==maxVal){
+                    if(x>=0 && x<row && y>=0 && y<col && rooms[x][y]==maxVal){
                         rooms[x][y] = distance;
                         que.add(new int[]{x,y});
                     }
