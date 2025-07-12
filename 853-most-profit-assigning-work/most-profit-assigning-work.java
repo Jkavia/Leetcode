@@ -17,7 +17,7 @@ class Solution {
         int totalProfit = 0;
         for (int w : worker) {
             int ind = binarySearch(maxProfitForDifficulty, w);
-            if (ind >= 0 && w >= maxProfitForDifficulty.get(ind)[0]) {
+            if (ind >= 0) {
                 totalProfit += maxProfitForDifficulty.get(ind)[1];
             }
         }
