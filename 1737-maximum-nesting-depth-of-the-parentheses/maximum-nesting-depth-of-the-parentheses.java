@@ -1,19 +1,18 @@
 class Solution {
     public int maxDepth(String s) {
-        int open =0;
-        int maxDepth = 0;
+        int max = 0;
+        int curr =0;
+
         for(char c:s.toCharArray()){
             if(c == '('){
-                open++;
-                maxDepth = Math.max(maxDepth, open);
+                curr++;
             }
-
             if(c == ')'){
-                open--;
+                max = Math.max(curr, max);
+                curr--;
             }
         }
-
-        return maxDepth;
+        return max;
         
     }
 }
