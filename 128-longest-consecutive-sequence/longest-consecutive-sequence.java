@@ -1,31 +1,24 @@
 class Solution {
     public int longestConsecutive(int[] nums) {
-        //save these values in a set 
-        // parse the set and check if a value exist for val[i]-1 if it doesnt 
-        // then i know it is the lowest number for that consecutive sequence 
-        // run a while loop on that value and keep adding 1 to it, as long as these consecutive values 
-        // exist in set, once its over compare with maxLen and update accordingly 
-
-        Set<Integer> numsSet = new HashSet<>();
-        for(int i:nums){
-            numsSet.add(i);
+        //save the values in set, look for the smallest value for each sequence and run a while loop for +1 of that value
+        Set<Integer> set = new HashSet<>();
+        int max = 0;
+        for(int num:nums){
+            set.add(num);
         }
-
-        int longest = 0, tempSeq =0;
-
-        for(int num: numsSet){
-            if(!numsSet.contains(num-1)){
-                int val = num;
-                while(numsSet.contains(val)){
-                    tempSeq++;
-                    val++;
+        
+        for(int num:set){
+            if(!set.contains(num-1)){
+                int curr = num;
+                int count = 0;
+                while(set.contains(curr)){
+                    count++;
+                    curr++;
                 }
-                longest = Math.max(longest, tempSeq);
-                tempSeq = 0;
+                max = Math.max(count, max);
             }
         }
+        return max;
 
-        return longest;
-        
     }
 }
