@@ -15,7 +15,10 @@ class Solution {
                     count++;
                     curr++;
                 }
-                max = Math.max(count, max);
+                if(count > max){
+                    max = count;
+                }
+         
             }
         }
         return max;
