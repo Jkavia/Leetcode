@@ -1,63 +1,61 @@
 class WordDictionary {
-    TrieNode head;
+    TrieNode root;
     public WordDictionary() {
-        head = new TrieNode();
+        root = new TrieNode();
     }
     
     public void addWord(String word) {
-        TrieNode node = head;
-        for(char c: word.toCharArray()){
-            if(!node.children.containsKey(c)){
-                TrieNode child = new TrieNode();
-                node.children.put(c, child);
-            }
-            TrieNode temp = node.children.get(c);
-            node = temp;
-        }
-        node.isLastNode = true;
+        addWordToTrie(root, word, 0);
     }
     
     public boolean search(String word) {
-        TrieNode node = head;
-        if(searchHelper(node, word, 0)){
-            return true;
-        }
-        return false;
+        return searchForStringInTrie(root, word, 0);
     }
 
-    private boolean searchHelper(TrieNode node, String word, int idx){
+    public boolean searchForStringInTrie(TrieNode root, String word, int wordIdx){
+        if(wordIdx == word.length()) return root.isWord;
 
-        if(idx == word.length()){
-            return node.isLastNode;
-        }
-        if(node.children.isEmpty())return false;
-
-        char curr = word.charAt(idx);
-
+        char curr = word.charAt(wordIdx);
+        Map<Character, TrieNode> currMap = root.children;
+        if(!currMap.containsKey(curr) && curr != '.')return false;
+        boolean ret = false;
         if(curr == '.'){
-            for(char c: node.children.keySet()){
-                if(searchHelper(node.children.get(c), word, idx+1)){
-                    return true;
+            for(char c:currMap.keySet()){
+                if(searchForStringInTrie(currMap.get(c), word, wordIdx+1)){
+                    ret = true;
+                    break;
                 }
             }
+        }else{
+        ret = searchForStringInTrie(currMap.get(curr), word, wordIdx+1);
         }
-            if(!node.children.containsKey(curr))return false;
+        return ret;
+    }
 
-             return searchHelper(node.children.get(curr), word, idx+1);
+    public void addWordToTrie(TrieNode root, String word, int wordIdx){
+        if(word.length() == wordIdx){
+            root.isWord = true;
+            return;
+        }
+
+        char curr = word.charAt(wordIdx);
+        Map<Character, TrieNode> currMap = root.children;
+        if(!currMap.containsKey(curr)){
+            currMap.put(curr, new TrieNode());
+        }
+        addWordToTrie(currMap.get(curr),word, wordIdx+1);
     }
 }
 
 class TrieNode{
     Map<Character, TrieNode> children;
-    boolean isLastNode;
+    boolean isWord;
 
     public TrieNode(){
         children = new HashMap<>();
-        isLastNode = false;
+        isWord = false;
     }
-
 }
-
 /**
  * Your WordDictionary object will be instantiated and called as such:
  * WordDictionary obj = new WordDictionary();
