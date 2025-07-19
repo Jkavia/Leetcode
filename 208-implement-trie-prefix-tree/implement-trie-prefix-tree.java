@@ -1,62 +1,73 @@
 class Trie {
-TrieNode head;
+    TrieNode root;
 
     public Trie() {
-        head = new TrieNode();
+        root = new TrieNode();
     }
     
     public void insert(String word) {
-        TrieNode node = head;
-
-        for(char c: word.toCharArray()){
-            if(!node.children.containsKey(c)){
-            TrieNode curr = new TrieNode();
-            curr.value = c;
-            node.children.put(c, curr);
-            }
-            TrieNode temp = node.children.get(c);
-            node = temp;
-        }
-
-        node.isLastNode = true;
+        insertWord(root, word,0);
     }
     
     public boolean search(String word) {
-        TrieNode node = head;
-
-        for(char c: word.toCharArray()){
-            if(!node.children.containsKey(c)){
-                return false;
-            }
-            TrieNode temp = node.children.get(c);
-            node = temp;
-        }
-        return node.isLastNode;
+        return searchString(root, word, 0);
     }
     
     public boolean startsWith(String prefix) {
-        TrieNode node = head;
+        return startsWithString(root, prefix, 0);
+    }
 
-        for(char c: prefix.toCharArray()){
-            if(!node.children.containsKey(c)){
+    public boolean searchString(TrieNode currNode, String word, int wordIdx){
+        if(wordIdx == word.length()){
+            if(currNode.isWord == true){
+                return true;
+            }else {
                 return false;
             }
-            TrieNode temp = node.children.get(c);
-            node = temp;
         }
-        return true;
+
+        char curr = word.charAt(wordIdx);
+        Map<Character, TrieNode> currMap = currNode.children;
+        if(!currMap.containsKey(curr)){
+            return false;
+        }
+        return searchString(currMap.get(curr), word, wordIdx+1);
+    }
+
+    public boolean startsWithString(TrieNode currNode, String word, int wordIdx){
+        if(wordIdx == word.length()){
+                return true;    
+        }
+
+        char curr = word.charAt(wordIdx);
+        Map<Character, TrieNode> currMap = currNode.children;
+        if(!currMap.containsKey(curr)){
+            return false;
+        }
+        return startsWithString(currMap.get(curr), word, wordIdx+1);
+    }
+
+    public void insertWord(TrieNode currNode, String word, int wordIdx){
+        if(wordIdx == word.length()){
+             currNode.isWord = true;
+             return;
+        }
+        char curr = word.charAt(wordIdx);
+        Map<Character, TrieNode> currMap = currNode.children;
+        if(!currMap.containsKey(curr)){
+            currMap.put(curr, new TrieNode());
+        }
+        insertWord(currMap.get(curr), word, wordIdx+1);
     }
 }
 
-
-class TrieNode {
-    Map<Character,TrieNode> children;
-    boolean isLastNode;
-    char value;
+class TrieNode{
+    Map<Character, TrieNode> children;
+    boolean isWord;
 
     public TrieNode(){
         children = new HashMap<>();
-        isLastNode = false;
+        isWord = false;
     }
 }
 
