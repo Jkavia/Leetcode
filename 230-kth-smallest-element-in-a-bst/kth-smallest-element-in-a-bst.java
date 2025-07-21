@@ -14,25 +14,25 @@
  * }
  */
 class Solution {
-    int counter = 0;
-    TreeNode result = null;
+    int count = 0;
+    TreeNode kth = null;
     public int kthSmallest(TreeNode root, int k) {
-        searchKthSmallest(root, k);
-        return result.val;
+        kthSmallestHelper(root, k);
 
+        return kth.val;
     }
 
-
-    public void searchKthSmallest(TreeNode root, int k){
+    public void kthSmallestHelper(TreeNode root, int k){
         if(root == null)return;
 
-
-        searchKthSmallest(root.left, k);
-        counter++;
-        if(counter == k){
-            result = root;
+        kthSmallestHelper(root.left, k);
+        count++;
+        if(count == k){
+            kth = root;
             return;
         }
-        searchKthSmallest(root.right, k);
+        kthSmallestHelper(root.right, k);
+        
     }
+    
 }
