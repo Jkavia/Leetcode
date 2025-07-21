@@ -14,21 +14,25 @@
  * }
  */
 class Solution {
+    int counter = 0;
+    TreeNode result = null;
     public int kthSmallest(TreeNode root, int k) {
-        PriorityQueue<Integer> pq = new PriorityQueue<>((a,b)-> Integer.compare(b,a));
-        searchKthSmallest(pq, root, k);
-        while(pq.size() > k)pq.poll();
-        return pq.peek();
+        searchKthSmallest(root, k);
+        return result.val;
+
     }
 
 
-    public void searchKthSmallest(PriorityQueue<Integer> pq, TreeNode root, int k){
+    public void searchKthSmallest(TreeNode root, int k){
         if(root == null)return;
 
-        if(pq.size() > k)pq.poll();
 
-        pq.add(root.val);
-        searchKthSmallest(pq, root.left, k);
-        searchKthSmallest(pq, root.right, k);
+        searchKthSmallest(root.left, k);
+        counter++;
+        if(counter == k){
+            result = root;
+            return;
+        }
+        searchKthSmallest(root.right, k);
     }
 }
