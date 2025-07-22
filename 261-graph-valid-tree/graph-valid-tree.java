@@ -2,6 +2,8 @@ class Solution {
     // make sure all the nodes are visited 
     // and do not visit a node twice unless its a parent. 
     public boolean validTree(int n, int[][] edges) {
+        if(edges.length != n-1) return false;
+        
         Set<Integer> visited = new HashSet<>();
         Map<Integer, List<Integer>> map = new HashMap<>();
 
@@ -16,8 +18,9 @@ class Solution {
             map.get(y).add(x);
         }
         checkCycles(map,visited, 0);
-
-        return visited.size() == n && edges.length == n-1;
+        // cycle can be checked by edges itself 
+        // next check that remains then is, if all the nodes are visited in the path
+        return visited.size() == n;
     }
 
     public void checkCycles(Map<Integer, List<Integer>> map, Set<Integer> visited, int node){
