@@ -1,38 +1,39 @@
 class Solution {
-    // make sure all the nodes are visited 
-    // and do not visit a node twice unless its a parent. 
+    // if there is only one path to each of the nodes 
+    // that means for n nodes there will always be n-1 edges.
+    // now then the only thing that is left to test is if 
+    // all th edges are visited for that we'll track a visited set 
     public boolean validTree(int n, int[][] edges) {
-        if(edges.length != n-1) return false;
-        
+        if(edges.length != n-1)return false;
+
         Set<Integer> visited = new HashSet<>();
-        Map<Integer, List<Integer>> map = new HashMap<>();
+        // create an adjaccency map
+        Map<Integer, List<Integer>> adjacency = new HashMap<>();
 
         for(int i=0;i<n;i++){
-            map.put(i, new ArrayList<>());
+            adjacency.put(i, new ArrayList<>());
         }
 
-        for(int[] edge: edges){
-            int x = edge[0];
-            int y = edge[1];
-            map.get(x).add(y);
-            map.get(y).add(x);
+        for(int[] edge:edges){
+            adjacency.get(edge[0]).add(edge[1]);
+            adjacency.get(edge[1]).add(edge[0]);
         }
-        checkCycles(map,visited, 0);
-        // cycle can be checked by edges itself 
-        // next check that remains then is, if all the nodes are visited in the path
-        return visited.size() == n;
+
+        checkVisited(adjacency, visited, 0);
+
+        return visited.size()==n;
     }
 
-    public void checkCycles(Map<Integer, List<Integer>> map, Set<Integer> visited, int node){
-        // dont let them add if its visited, 
+    public void checkVisited(Map<Integer, List<Integer>> adjacency, Set<Integer> visited, int node){
         if(visited.contains(node))return;
 
         visited.add(node);
-        //System.out.println(visited.toString());
-        for(int n:map.get(node)){
-            checkCycles(map, visited, n);
+
+        List<Integer> neighbors = adjacency.get(node);
+
+        for(int n: neighbors){
+            checkVisited(adjacency, visited, n);
         }
     }
-
 
 }
