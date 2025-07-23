@@ -1,20 +1,17 @@
 class Solution {
-
     public int[] twoSum(int[] nums, int target) {
+        //since its not sorted so we use map, cause sorting it will lose the index
         Map<Integer, Integer> map = new HashMap<>();
 
         for(int i=0;i<nums.length;i++){
-            int remaining = target-nums[i];
-            if(map.containsKey(remaining)){
-                return new int[]{map.get(remaining),i};
+            int num = nums[i];
+            int lookup = target-num;
+            if(map.containsKey(lookup)){
+                return new int[]{map.get(lookup), i};
             }
-            map.put(nums[i],i);
+            map.put(num, i);
         }
 
         return new int[2];
     }
 }
-
-// just parse through the array and look for target-curr in map and if its duplicate numbers also check 
-// count > 1
-
