@@ -4,12 +4,10 @@ class Solution {
 
         while(r<nums.length){
             if(nums[r] > nums[l]){
-                nums[++l] = nums[r++];
-            }else{r++;}
+                nums[++l] = nums[r];
+            }
+            r++;
         }
         return l+1;
     }
 }
-//                   r
-//[0,1,2,3,4,2,2,3,3,4]
-//         l
