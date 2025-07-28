@@ -6,7 +6,7 @@ public class Codec {
         StringBuffer sb = new StringBuffer();
 
         for(String s: strs){
-            sb.append(s.replaceAll("#", "##")).append(" # ");
+            sb.append(s.replace("#", "##")).append(" # ");
         }
         return sb.toString();
     }
@@ -18,7 +18,7 @@ public class Codec {
 
         for(int i =0;i<arr.length-1;i++){
             String str= arr[i];
-            ret.add(str.replaceAll("##","#"));
+            ret.add(str.replace("##","#"));
         }
         return ret;
     }
