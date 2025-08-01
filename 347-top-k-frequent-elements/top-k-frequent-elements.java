@@ -1,26 +1,25 @@
-// solution with bucket that will store the values against their frequencies 
-
+// can use the min heap to track the elements based on frequency and remove as size extends k
+// other is have a list where index is fequency and all the elements with that fequency are there 
 class Solution {
     public int[] topKFrequent(int[] nums, int k) {
-        List<Integer>[] bucket = new List[nums.length+1];
-        Map<Integer, Integer> freqMap = new HashMap<>();
+        Map<Integer, Integer> map = new HashMap<>();
+        List<Integer>[] list = new List[nums.length+1];
         int[] ret = new int[k];
-        int j=0;
-        for(int n:nums){
-            freqMap.put(n, freqMap.getOrDefault(n, 0)+1);
-        }
-        for(int key: freqMap.keySet()){
-            int count = freqMap.get(key);
-            if(bucket[count] == null){
-                bucket[count] = new ArrayList<>();
-            }
-            bucket[count].add(key);
-        }
+        for(int num:nums)map.put(num, map.getOrDefault(num,0)+1);
 
-        for(int i=bucket.length-1;i>0 && j<k; i--){
-            if(bucket[i] != null){
-                for(int x=0;x<bucket[i].size() && j<k;x++){
-                    ret[j++] = bucket[i].get(x);
+        for(int key: map.keySet()){
+            int val = map.get(key);
+
+            if(list[val] == null){
+                list[val] = new ArrayList<>();
+            }
+            list[val].add(key);
+        }
+        int x =0;
+        for(int i=list.length-1;i>=0 && x<k;i--){
+            if(list[i] != null){
+                for(int j=0;j<list[i].size() && x<k;j++){
+                    ret[x++] = list[i].get(j);
                 }
             }
         }
