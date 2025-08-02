@@ -1,25 +1,21 @@
 class Solution {
     public int characterReplacement(String s, int k) {
-        int maxCount =0;
+        int maxCount = 0;
 
-        for(char i='A';i<='Z';i++){
-            int l=0,r=0,replacement =0;
+        for(char c = 'A';c<='Z';c++){
+            int l=0,r=0,replacements=0;
             while(r<s.length()){
-                char end = s.charAt(r);
-            
-
-                if(end == i){
+                if(s.charAt(r) == c){
                     r++;
-                }else if(replacement < k){
+                }else if(replacements < k){
+                    replacements++;
                     r++;
-                    replacement++;
-                }else if(s.charAt(l) == i){
+                }else if(s.charAt(l) == c){
                     l++;
                 }else{
                     l++;
-                    replacement--;
+                    replacements--;
                 }
-
                 maxCount = Math.max(maxCount, r-l);
             }
         }
@@ -28,5 +24,6 @@ class Solution {
     }
 }
 
-// so bascially maintain a sliding window and then as you move the window
-// update the count of replacements accordingly 
+// here we'll use sliding window for each of the alphabet in the vocabulary 
+// and as we move we'll track the count of the alphabet and k
+// we'll ajust the k as we shrink the window 
