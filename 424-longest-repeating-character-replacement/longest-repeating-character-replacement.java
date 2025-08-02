@@ -1,8 +1,11 @@
 class Solution {
     public int characterReplacement(String s, int k) {
         int maxCount = 0;
+        Set<Character> set = s.chars()
+                      .mapToObj(c -> (char) c)
+                      .collect(Collectors.toSet());
 
-        for(char c = 'A';c<='Z';c++){
+        for(char c: set){
             int l=0,r=0,replacements=0;
             while(r<s.length()){
                 if(s.charAt(r) == c){
