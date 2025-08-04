@@ -1,42 +1,38 @@
 class Solution {
-    // maintain a sorted array 
-    // if you find the element larger than the last element
-    // do a bst and replce it with the closest one to that 
-    // keep checking the size of this sorted array 
     public int lengthOfLIS(int[] nums) {
-        
-        List<Integer> lst = new ArrayList<>();
-        int max = 0;
+        List<Integer> sorted = new ArrayList<>();
+        int maxLen = 0;
 
-        for(int n: nums){
-            if(!lst.isEmpty() && lst.get(lst.size()-1) >= n){
-                doBstReplace(n, lst);
+        for(int num: nums){
+            if(sorted.isEmpty() || sorted.get(sorted.size()-1)<num){
+                sorted.add(num);
             }else{
-                lst.add(n);
+                replace(sorted, num);
             }
-            max = Math.max(max, lst.size());
+            maxLen = Math.max(maxLen, sorted.size());
         }
-        return max;
+        return maxLen;
     }
 
-    public void doBstReplace(int n, List<Integer> lst){
-        int left =0, right = lst.size()-1;
+    public void replace(List<Integer> sorted, int num){
+        int left=0, right= sorted.size()-1;
 
-        while(left < right){
-            int mid = left + (right-left)/2;
-
-            if(lst.get(mid) == n){
+        while(left<right){
+            int mid = left+(right-left)/2;
+            if(num == sorted.get(mid)){
                 left = mid;
                 break;
-            }else if(lst.get(mid) > n){
-                right = mid;
-            }else{
+            }else if(num > sorted.get(mid)){
                 left = mid+1;
+            }else{
+                right = mid;
             }
         }
 
-        lst.set(left,n);
+        sorted.set(left, num);
     }
-
-
 }
+
+// maintain a sorted array and whenever you encounter an element thats not incresing
+// replace an element in the array with that such that its closest to its value 
+// to find the replacement point just do a binary search.
