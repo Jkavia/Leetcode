@@ -1,7 +1,5 @@
 class Solution {
     public int getSum(int a, int b) {
-        // add numbers without carry then add the carry 
-        // repeat until there is no carry 
 
         while(b!=0){
             int sum = a^b;
@@ -9,8 +7,11 @@ class Solution {
 
             a = sum;
             b = carry;
-        }
+        }   
 
         return a;
+        
     }
 }
+
+// we'll do a^b to add them but that doesnt include the carry so we'll do a&b << 1 to account for it
