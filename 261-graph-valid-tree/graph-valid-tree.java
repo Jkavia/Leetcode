@@ -1,39 +1,32 @@
 class Solution {
-    // if there is only one path to each of the nodes 
-    // that means for n nodes there will always be n-1 edges.
-    // now then the only thing that is left to test is if 
-    // all th edges are visited for that we'll track a visited set 
     public boolean validTree(int n, int[][] edges) {
-        if(edges.length != n-1)return false;
-
+        if(edges.length >= n)return false;
         Set<Integer> visited = new HashSet<>();
-        // create an adjaccency map
-        Map<Integer, List<Integer>> adjacency = new HashMap<>();
 
-        for(int i=0;i<n;i++){
-            adjacency.put(i, new ArrayList<>());
+        Map<Integer, List<Integer>> map = new HashMap<>();
+        for(int i=0;i<n;i++)map.put(i, new ArrayList<>());
+        for(int[] edge: edges){
+            map.get(edge[0]).add(edge[1]);
+            map.get(edge[1]).add(edge[0]);
         }
 
-        for(int[] edge:edges){
-            adjacency.get(edge[0]).add(edge[1]);
-            adjacency.get(edge[1]).add(edge[0]);
-        }
+        dfs(0, map, visited);
 
-        checkVisited(adjacency, visited, 0);
-
-        return visited.size()==n;
+        return visited.size() == n;
     }
 
-    public void checkVisited(Map<Integer, List<Integer>> adjacency, Set<Integer> visited, int node){
+    public void dfs(int node, Map<Integer, List<Integer>> map, Set<Integer> visited){
         if(visited.contains(node))return;
-
         visited.add(node);
 
-        List<Integer> neighbors = adjacency.get(node);
-
-        for(int n: neighbors){
-            checkVisited(adjacency, visited, n);
+        for(int currNode: map.get(node)){
+            dfs(currNode, map, visited);
         }
     }
-
 }
+
+// so if there are loops then we'll have equal to or more edges than nodes. 
+// therefore, one check is to ensure edges = n-1
+// next thing thats left for validity is all nodes should be connected so we start from 0
+// and track visited and after 1 round of dfs if all nodes are not visited then we know 
+// that its not valid. 
