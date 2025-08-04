@@ -1,3 +1,9 @@
+/**
+we'll first replace all # in the string with ## and then add separator as ' # '
+then append the string.
+**/
+
+
 public class Codec {
 
     // Encodes a list of strings to a single string.
@@ -5,21 +11,22 @@ public class Codec {
         StringBuffer sb = new StringBuffer();
 
         for(String s: strs){
-            sb.append(s.replace("#","##")).append(" # ");
+            sb.append(s.replace("#", "##")).append(" # ");
         }
+
         return sb.toString();
     }
 
     // Decodes a single string to a list of strings.
     public List<String> decode(String s) {
-        String[] strs = s.split(" # ", -1);
-        List<String> lst = new ArrayList<>();
+        List<String> ret = new ArrayList<>();
+        String[] str= s.split(" # ",-1);
+        for(int i=0;i<str.length-1;i++){
 
-        for(int i=0;i<strs.length-1;i++){
-            String strr = strs[i].replace("##","#");
-            lst.add(strr);
+            String updated = str[i].replace("##","#");
+            ret.add(updated);
         }
-        return lst;
+        return ret;
     }
 }
 
