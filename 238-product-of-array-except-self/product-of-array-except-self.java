@@ -1,24 +1,23 @@
 class Solution {
     public int[] productExceptSelf(int[] nums) {
-        int prev =1;
-        int[] products = new int[nums.length];
-        for(int i=0;i<nums.length;i++){
-            products[i] = nums[i]*prev;
-            prev = products[i];
+        int left =1;
+        int[] ret = new int[nums.length];
+
+        for(int i=0;i<ret.length;i++){
+            ret[i] = left*nums[i];
+            left = ret[i];
         }
+        int right = 1;
 
-        prev =1;
-
-        for(int i=nums.length-1;i>=0;i--){
-            int temp = nums[i];
+        for(int i=ret.length-1;i>=0;i--){
             if(i==0){
-                nums[i] = prev;
-                continue;
+                ret[i] = right;
+            }else{
+                ret[i] = right * ret[i-1];
             }
-            nums[i] = products[i-1]*prev;
-            prev = prev*temp;
+            right = right*nums[i];
         }
 
-        return nums;
+        return ret;
     }
 }
