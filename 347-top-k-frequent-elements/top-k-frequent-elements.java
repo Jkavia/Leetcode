@@ -1,23 +1,21 @@
-// can use the min heap to track the elements based on frequency and remove as size extends k
-// other is have a list where index is fequency and all the elements with that fequency are there 
 class Solution {
     public int[] topKFrequent(int[] nums, int k) {
-        Map<Integer, Integer> map = new HashMap<>();
         List<Integer>[] list = new List[nums.length+1];
         int[] ret = new int[k];
-        for(int num:nums)map.put(num, map.getOrDefault(num,0)+1);
-
-        for(int key: map.keySet()){
-            int val = map.get(key);
-
-            if(list[val] == null){
-                list[val] = new ArrayList<>();
-            }
-            list[val].add(key);
+        Map<Integer, Integer> map = new HashMap<>();
+        for(int num: nums){
+            map.put(num, map.getOrDefault(num,0)+1);
         }
-        int x =0;
+        for(int key: map.keySet()){
+            int count = map.get(key);
+            if(list[count] == null){
+                list[count] = new ArrayList<>();
+            }
+            list[count].add(key);
+        }
+        int x=0;
         for(int i=list.length-1;i>=0 && x<k;i--){
-            if(list[i] != null){
+            if(list[i]!=null){
                 for(int j=0;j<list[i].size() && x<k;j++){
                     ret[x++] = list[i].get(j);
                 }
@@ -26,3 +24,5 @@ class Solution {
         return ret;
     }
 }
+// create a min heap and remove when size > k and last k are the top ones O(nlogn)
+// create a frequency list  O(n)
