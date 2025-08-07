@@ -1,28 +1,31 @@
 class Solution {
     public int countSubstrings(String s) {
-        int ret =0;
+        int n= s.length();
+        int ret = 0;
 
-        for(int i=0;i<s.length();i++){
-            ret+= ispalin(s, i, i);
-            ret+= ispalin(s, i, i+1);
+
+        for(int i=0;i<n;i++){
+            ret += palin(i,i, s);
+            ret += palin(i, i+1, s);
         }
 
         return ret;
     }
 
-    public int ispalin(String s, int i, int j){
+    public int palin(int i, int j, String s){
         int count =0;
 
         while(i>=0 && j<s.length() && s.charAt(i) == s.charAt(j)){
+            count++;
             i--;
             j++;
-            count++;
         }
 
         return count;
     }
 }
 
-// instead of outside in char comparisons 
-// we do inside out and there are only two possiblities either odd length 
-// and even length strings, 
+// there are only two types of palindromes 
+// even length and odd len
+// we'll compare both and do inside out comparison 
+// starting from i=0 to n-1
