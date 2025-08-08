@@ -1,45 +1,37 @@
 class Solution {
-    public String minWindow(String s, String t) {
+    public String minWindow(String str, String t) {
         Map<Character, Integer> map = new HashMap<>();
 
         for(char c: t.toCharArray()){
-            map.put(c, map.getOrDefault(c, 0)+1);
+            map.put(c, map.getOrDefault(c,0)+1);
         }
+        int count = map.size();
+        int s = 0, e =0;
+        int a1=0,a2=str.length()+1;
 
-        int size = map.size();
-        int count =0;
-        int[] coordinates = new int[]{0, s.length()-1};
-        int minLen = Integer.MAX_VALUE;
-        int start =0, end =0;
-
-        while(end < s.length()){
-            char c = s.charAt(end);
-            if(map.containsKey(c)){
-                map.put(c, map.get(c)-1);
-                //System.out.println("before: "+c+"   "+map.get(c));
-                if(map.get(c) == 0)count++;
+        while(e < str.length()){
+            char end = str.charAt(e);
+            if(map.containsKey(end)){
+                map.put(end, map.get(end)-1);
+                if(map.get(end) == 0)count--;
             }
-            end++;
-            while(start < s.length() && count == size){
-                //System.out.println(start+"   "+end);
-                if(minLen > end-start){
-                    minLen = end-start;
-                    coordinates[0] = start;
-                    coordinates[1] = end;
+
+            while(count == 0){
+                if(a2-a1 > e-s){
+                    a1 = s;
+                    a2 = e;
                 }
-                char sChar = s.charAt(start);
-                if(map.containsKey(sChar)){
-                map.put(sChar, map.get(sChar)+1);
-                //System.out.println("afterUp: "+sChar+"   "+map.get(sChar));
-                if(map.get(sChar) > 0){
-                    //System.out.println("after: "+sChar+"   "+map.get(sChar));
-                    count--;}
+
+                char start = str.charAt(s);
+                if(map.containsKey(start)){
+                    map.put(start, map.get(start)+1);
+                    if(map.get(start) > 0)count++;
                 }
-                start++;
-            }   
+                s++;
+            }
+            e++;
         }
-        if(minLen == Integer.MAX_VALUE)return "";
-        return s.substring(coordinates[0],coordinates[1]);
-        }
-        
+
+        return (a2 == str.length()+1)?"":str.substring(a1, a2+1);
     }
+}
