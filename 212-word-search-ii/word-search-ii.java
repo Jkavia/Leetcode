@@ -1,67 +1,66 @@
 class Solution {
     public List<String> findWords(char[][] board, String[] words) {
-        int row = board.length;
-        int col = board[0].length;
-        Trie trie = createTrie(words);
-        Set<String> set = new HashSet<>();
-        boolean[][] visited = new boolean[row][col];
-        int[][] directions = new int[][]{{1,0},{0,1},{-1,0},{0,-1}};
+        int m = board.length;
+        int n = board[0].length;
+        TrieNode root = createTrie(words);
+        boolean[][] visited = new boolean[m][n];
+        List<String> ret = new ArrayList<>();
 
-        for(int i=0;i<row;i++){
-            for(int j=0;j<col;j++){
-                char c =board[i][j];
-                if(trie.children[c-'a']!=null){
-                    dfs(board, set, visited, directions, i, j, trie);
-                }
+        for(int i=0;i<m;i++){
+            for(int j=0;j<n;j++){
+                findWordsHelper(root, visited, ret, i, j, board);
             }
         }
 
-        return new ArrayList<>(set);
-        
+        return ret;
+    }
+    //traverse the array and try to find the words in trie based on this traversal 
+    public void findWordsHelper(TrieNode root,boolean[][] visited,List<String> ret,int m, int n,char[][] board){
+        if(m<0 || n<0 || m>=board.length || n>=board[0].length || visited[m][n] || root.children[board[m][n]-'a']==null)
+        {
+            return;
+        }
+
+        visited[m][n] = true;
+
+        TrieNode curr = root.children[board[m][n]-'a'];
+        if(curr.word != null){
+            ret.add(curr.word);
+            curr.word = null;
+        }
+
+        findWordsHelper(curr, visited, ret, m+1, n, board);
+        findWordsHelper(curr, visited, ret, m, n+1, board);
+        findWordsHelper(curr, visited, ret, m-1, n, board);
+        findWordsHelper(curr, visited, ret, m, n-1, board);
+
+        visited[m][n] = false;
     }
 
-    public void dfs(char[][] board, Set<String> set, boolean[][] visited, int[][] directions, int i, int j, Trie trie){
-        if(i<0 || i>= board.length || j<0 || j>=board[0].length || visited[i][j] || trie.children[board[i][j]-'a']== null)return;
-
-        if(trie.children[board[i][j]-'a'].word != null){
-            set.add(trie.children[board[i][j]-'a'].word);
-        }
-        visited[i][j] = true;
-        trie = trie.children[board[i][j]-'a'];
-        for(int[] dir:directions){
-            int x = i+dir[0];
-            int y = j+dir[1];
-            dfs(board, set, visited, directions, x,y,trie);
-        }
-        visited[i][j] = false;
-    }
 
 
-    public Trie createTrie(String[] words){
-        Trie root = new Trie();
-        for(String s:words){
-            Trie p = root;
-            for(char c:s.toCharArray()){
-                if(p.children[c-'a'] == null){
-                    p.children[c-'a'] = new Trie();
+
+    public TrieNode createTrie(String[] words){
+        TrieNode root = new TrieNode();
+        for(String s: words){
+            TrieNode node = root;
+            for(char c: s.toCharArray()){
+                if(node.children[c-'a'] == null){
+                    node.children[c-'a'] = new TrieNode();
                 }
-                p = p.children[c-'a'];
+                node = node.children[c-'a'];
             }
-            p.word = s;
+            node.word = s; 
         }
 
         return root;
     }
 }
-class Trie{
-    Trie[] children = new Trie[26];
+
+class TrieNode{
+    TrieNode[] children = new TrieNode[26];
     String word;
 }
 
-//to solve this problem we need to do a dfs+backtracking+trie approach. 
-// trie will store children and if a word ends there then a string value word. 
-// each trie node contains all the letter that start from there. 
-// to track these characters we'll use the alphabetical numbers c-'a' for 0-26 
-// once we have a trie we will do dfs on all 4 directions i.e. up/down/left/right 
-// we'll maintain a visited array to avoid duplicate checks and if we reach a node in trie
-// that has the word value that means we successfully found a match so we add it. 
+// create a trie with childern as each alphabet so size 26 
+// 
