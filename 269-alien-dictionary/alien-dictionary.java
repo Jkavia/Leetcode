@@ -1,60 +1,88 @@
 class Solution {
     public String alienOrder(String[] words) {
-        
+        Map<Character, Integer> indegreeMap = new HashMap<>();
         Map<Character, Set<Character>> charMap = new HashMap<>();
-        // key is a character and value is all its dependencies i.e. words before it.
-        Map<Character, Integer> dependenciesMap = new HashMap<>();
-        for(int i=0;i<words.length;i++){
-            for(char c: words[i].toCharArray()){
-                if(!dependenciesMap.containsKey(c)){
-                dependenciesMap.put(c,0);
-            }
+
+        //add all words to indegree
+        for(String word: words){
+            for(char c: word.toCharArray()){
+                if(!indegreeMap.containsKey(c)){
+                    indegreeMap.put(c,0);
+                }
             }
         }
+
         for(int i=0;i<words.length-1;i++){
             String word1 = words[i];
             String word2 = words[i+1];
-            int len = Math.min(word1.length(), word2.length());
 
-            if(word1.length()>word2.length() && word1.startsWith(word2))return "";
+            if(word1.length() > word2.length() && word1.startsWith(word2))return "";
+
+            int len = Math.min(word1.length(), word2.length());
 
             for(int j=0;j<len;j++){
                 if(word1.charAt(j) != word2.charAt(j)){
-                    Set<Character> neighbors = charMap.getOrDefault(word1.charAt(j), new HashSet<>());
-                    if(!neighbors.contains(word2.charAt(j))){
-                    neighbors.add(word2.charAt(j));
-                    charMap.put(word1.charAt(j), neighbors);
-                    dependenciesMap.put(word2.charAt(j),dependenciesMap.getOrDefault(word2.charAt(j),0)+1);
+                    char c1 = word1.charAt(j);
+                    char c2 = word2.charAt(j);
+                    Set<Character> children = charMap.getOrDefault(c1, new HashSet<>());
+                    if(!children.contains(c2)){
+                    children.add(c2);
+                    charMap.put(c1, children);
+                    indegreeMap.put(c2, indegreeMap.get(c2)+1);
                     }
                     break;
                 }
             }
         }
-        Queue<Character> que = new LinkedList<>();
-        StringBuffer sb = new StringBuffer();
-            for(Character c: dependenciesMap.keySet()){
-                if(dependenciesMap.get(c) == 0){
-                    que.add(c);
+
+            //Now traverse this map in BFS using a que 
+            Queue<Character> que = new LinkedList<>();
+            for(char key: indegreeMap.keySet()){
+                if(indegreeMap.get(key) == 0){
+                    que.add(key);
                 }
             }
 
+            StringBuffer sb = new StringBuffer();
             while(!que.isEmpty()){
-                char c = que.poll();
-                sb.append(c);
-                Set<Character> neighbors = charMap.get(c);
-                if(neighbors == null || neighbors.isEmpty())continue;
+                char curr = que.poll();
+  
+                sb.append(curr);
+                Set<Character> children = charMap.get(curr);
+                if(children == null || children.isEmpty())continue;
 
-                for(char chr: neighbors){
-                    dependenciesMap.put(chr, dependenciesMap.get(chr)-1);
-                    if(dependenciesMap.get(chr)==0){
-                        que.add(chr);
+                for(char c: children){
+                    indegreeMap.put(c, indegreeMap.get(c)-1);
+                    if(indegreeMap.get(c) == 0){
+                        que.add(c);
                     }
                 }
             }
-            //if sb length doesnt contain all the characters that means we got a cycle. 
-            if(sb.length() != dependenciesMap.size()){
-                return "";
-            }
-            return sb.toString();
+  
+        return (sb.length() == indegreeMap.size()) ? sb.toString():"";
     }
 }
+
+// create a map of indegree 
+// parse thorough words in pairs of two and whenever there is a mismatch add word1 char as key and word 2 char as value to set 
+// ["wrt","wrf","er","ett","rftt"]
+/****
+
+w 0
+r 0
+t 0
+f 0
+e 0
+
+t f
+w e
+r t
+e r
+sb = wertf
+que = f
+
+f
+make e indegree -1
+if that makes it 0, add to que
+
+ */
