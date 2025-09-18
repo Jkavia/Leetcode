@@ -13,15 +13,18 @@
  *     }
  * }
  */
+ // traversing all the way to the end, then switching and rturning 
 class Solution {
     public TreeNode invertTree(TreeNode root) {
         if(root == null)return null;
 
-        TreeNode curr = new TreeNode(root.val);
+        invertTree(root.left);
+        invertTree(root.right);
 
-        curr.right = invertTree(root.left);
-        curr.left = invertTree(root.right);
-
-        return curr;
+        TreeNode temp = root.left;
+        root.left = root.right;
+        root.right = temp;
+        
+        return root;
     }
 }
