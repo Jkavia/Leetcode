@@ -13,19 +13,19 @@ class Solution {
         ListNode head = new ListNode();
         ListNode curr = head;
 
-        while(list1 != null && list2 != null){
+        while(list1 !=null && list2!=null){
             if(list1.val <= list2.val){
-                curr.next = list1;
+                head.next = list1;
                 list1 = list1.next;
             }else{
-                curr.next = list2;
+                head.next = list2;
                 list2 = list2.next;
             }
-            curr = curr.next;
+            head = head.next;
         }
 
-        ListNode remaining = (list1 == null)? list2:list1;
-        curr.next = remaining;
-        return head.next;
+        head.next = (list1 ==null)? list2:list1;
+
+        return curr.next;
     }
 }
