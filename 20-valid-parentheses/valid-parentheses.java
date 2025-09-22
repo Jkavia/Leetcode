@@ -16,6 +16,6 @@ class Solution {
             }
         }
 
-        return stck.isEmpty();
+        return stck.size()==0;
     }
 }
