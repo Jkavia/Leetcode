@@ -36,7 +36,6 @@ class Solution {
         if(root == null){
             return 0;
         }
-        System.out.println(depth);
         if(depth == maxDepth)return root.val;
 
         return getmaxsum(root.left, depth+1)+getmaxsum(root.right, depth+1);
